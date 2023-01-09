@@ -10,4 +10,8 @@ public class ReaderResult {
     public void setParserStatus(boolean parserStatus) {
         ParserStatus = parserStatus;
     }
+
+    private String firstStageURL;
+    public String getfirstStageURL(){return firstStageURL;}
+    public void setFirstStageURL(String url){firstStageURL = url;}
 }

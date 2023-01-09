@@ -11,6 +11,7 @@ public class JSONParser {
         if(!fileContaisn.equals("")){
             readConfig(path);
             rdrRes.setParserStatus(true);
+            rdrRes.setFirstStageURL(config.get("DowmloadAppointmentAdress"));
             return rdrRes;
         }
         else{

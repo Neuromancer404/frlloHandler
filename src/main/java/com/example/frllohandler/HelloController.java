@@ -39,8 +39,16 @@ public class HelloController {
             alert.setText("Введите дату начала и окончания");
         }
         else{
+            JSONParser jsnPrsr = new JSONParser();
+            ReaderResult result =  jsnPrsr.parse("config.json");
+
             Downloader downloader = new Downloader();
-            downloader.startDownload(startDate, endDate);
+            try {
+                downloader.startDownload(startDate, endDate, result.getfirstStageURL(), "FRLLO");
+            } catch (IOException e) {
+                alert.setText(e.getMessage());
+                System.out.println(e);
+            }
         }
     }
     @FXML
