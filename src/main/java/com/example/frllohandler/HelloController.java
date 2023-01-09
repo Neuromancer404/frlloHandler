@@ -46,7 +46,7 @@ public class HelloController {
             try {
                 downloader.startDownload(startDate, endDate, result.getfirstStageURL(), "FRLLO");
             } catch (IOException e) {
-                alert.setText(e.getMessage());
+                alert.setText(e.toString());
                 System.out.println(e);
             }
         }
