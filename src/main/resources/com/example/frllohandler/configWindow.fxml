@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.frllohandler.ConfigWindowController">
+   <children>
+      <Button layoutX="274.0" layoutY="361.0" mnemonicParsing="false" onMouseClicked="#SaveConfigBtnClick" text="Сохранить" />
+      <TabPane prefHeight="354.0" prefWidth="601.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Загрузка">
+               <content>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="155.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="507.0" minWidth="10.0" prefWidth="446.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Сведения о льготах" GridPane.rowIndex="1" />
+                        <Label prefHeight="46.0" prefWidth="155.0" text="Сведения о назначенной мед. продукции" wrapText="true" GridPane.rowIndex="2" />
+                        <Label prefHeight="48.0" prefWidth="155.0" text="Сведения об отпущенной мед. продукции" wrapText="true" GridPane.rowIndex="3" />
+                        <TextField fx:id="downloadBenefitAdress" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="DowmloadAppointmentAdress" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="DownloadReleaseAdress" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label text="Адрес загрузки: " GridPane.columnIndex="1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </GridPane>
+               </content>
+            </Tab>
+          <Tab text="Untitled Tab 2" />
+        </tabs>
+      </TabPane>
+      <Label fx:id="alertLabel" layoutX="14.0" layoutY="365.0" textFill="RED" />
+   </children>
+</AnchorPane>
