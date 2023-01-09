@@ -1,10 +1,12 @@
 package com.example.frllohandler;
 
+import com.example.frllohandler.JsonHandler.Downloader;
 import com.example.frllohandler.JsonHandler.JSONParser;
 import com.example.frllohandler.JsonHandler.ReaderResult;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -12,15 +14,35 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class HelloController {
     @FXML
+    private Label alert;
+    @FXML
     private ResourceBundle resources;
+    @FXML
+    private DatePicker endPeriod;
 
     @FXML
+    private DatePicker startPeriod;
+    @FXML
     private URL location;
+    @FXML
+    void startDownload(MouseEvent event) {
+        alert.setText("");
+        LocalDate startDate = startPeriod.getValue();
+        LocalDate endDate = endPeriod.getValue();
 
+        if(startDate == null && endDate == null){
+            alert.setText("Введите дату начала и окончания");
+        }
+        else{
+            Downloader downloader = new Downloader();
+            downloader.startDownload(startDate, endDate);
+        }
+    }
     @FXML
     void openSettingsBtnClick(MouseEvent event) {
         try {
