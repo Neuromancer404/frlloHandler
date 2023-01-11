@@ -33,17 +33,19 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label text="Сведения о льготах" GridPane.rowIndex="1" />
-                        <Label prefHeight="46.0" prefWidth="155.0" text="Сведения о назначенной мед. продукции" wrapText="true" GridPane.rowIndex="2" />
+                        <Label text="Сведения о льготах" GridPane.rowIndex="2" />
+                        <Label prefHeight="46.0" prefWidth="155.0" text="Сведения о назначенной мед. продукции" wrapText="true" GridPane.rowIndex="1" />
                         <Label prefHeight="48.0" prefWidth="155.0" text="Сведения об отпущенной мед. продукции" wrapText="true" GridPane.rowIndex="3" />
-                        <TextField fx:id="downloadBenefitAdress" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="DowmloadAppointmentAdress" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="downloadBenefitAdress" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="DowmloadAppointmentAdress" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <TextField fx:id="DownloadReleaseAdress" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="Адрес загрузки: " GridPane.columnIndex="1">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
+                        <Label text="ЕГИССО:" GridPane.rowIndex="4" />
+                        <TextField fx:id="DownloadEGISSO" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                      </children>
                   </GridPane>
                </content>

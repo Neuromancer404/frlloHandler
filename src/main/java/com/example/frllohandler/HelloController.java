@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -30,26 +31,70 @@ public class HelloController {
     @FXML
     private URL location;
     @FXML
+    private Tab egissoTab;
+    @FXML
+    private Tab frlloCase1Tab;
+    @FXML
+    private Tab frlloCase2Tab;
+    @FXML
+    private Tab frlloCase3Tab;
+
+    @FXML
     void startDownload(MouseEvent event) {
         alert.setText("");
+        String fileName = "file";
+        if(egissoTab.isSelected()){
+            alert.setText("Идет загрузка...");
+            download("EGISSO", 0);
+        }else if(frlloCase1Tab.isSelected()){
+            download("FRLLO1", 1);
+        }else if(frlloCase2Tab.isSelected()){
+            download("FRLLO2", 2);
+        }else if(frlloCase3Tab.isSelected()){
+            download("FRLLO3", 3);
+        }
+    }
+    private Downloader downloader;
+    private void download(String fileName, int num) {
         LocalDate startDate = startPeriod.getValue();
         LocalDate endDate = endPeriod.getValue();
 
-        if(startDate == null && endDate == null){
-            alert.setText("Введите дату начала и окончания");
+        if(num != 0){
+            fileName = fileName+"_"+startDate+"-"+endDate;
+            if(startDate == null && endDate == null){
+                alert.setText("Введите дату начала и окончания");
+            }
         }
+
         else{
             JSONParser jsnPrsr = new JSONParser();
             ReaderResult result =  jsnPrsr.parse("config.json");
 
-            Downloader downloader = new Downloader();
+            downloader = new Downloader();
             try {
-                downloader.startDownload(startDate, endDate, result.getfirstStageURL(), "FRLLO");
+                switch (num){
+                    case 1:
+                        downloader.startDownload(startDate, endDate, result.getfirstStageURL(), fileName);
+                        break;
+                    case 2:
+                        downloader.startDownload(startDate, endDate, result.getSecondStageURL(), fileName);
+                        break;
+                    case 3:
+                        downloader.startDownload(startDate, endDate, result.getThirhStageURL(), fileName);
+                        break;
+                    case 0:
+                        downloader.startDownload(result.getEgissoUrl(), fileName);
+                        break;
+                }
             } catch (IOException e) {
                 alert.setText(e.toString());
                 System.out.println(e);
             }
         }
+    }
+    @FXML
+    void killDownload(MouseEvent event) {
+        downloader = null;
     }
     @FXML
     void openSettingsBtnClick(MouseEvent event) {

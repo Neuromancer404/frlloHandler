@@ -14,10 +14,7 @@ import java.util.ResourceBundle;
 
 public class ConfigWindowController {
     @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
+    private TextField DownloadEGISSO;
 
     @FXML
     private TextField DowmloadAppointmentAdress;
@@ -47,7 +44,7 @@ public class ConfigWindowController {
     private boolean checkFields() {
         if(
                 DowmloadAppointmentAdress.getText().length() > 0 && DownloadReleaseAdress.getText().length() > 0
-                && downloadBenefitAdress.getText().length() > 0
+                && downloadBenefitAdress.getText().length() > 0 && DownloadEGISSO.getText().length() > 0
         ){
             return true;
         }else{
@@ -60,6 +57,7 @@ public class ConfigWindowController {
         conf.put("DowmloadAppointmentAdress", DowmloadAppointmentAdress.getText());
         conf.put("DownloadReleaseAdress", DownloadReleaseAdress.getText());
         conf.put("downloadBenefitAdress", downloadBenefitAdress.getText());
+        conf.put("downloadEGISSO", DownloadEGISSO.getText());
         return conf;
     }
 
@@ -76,6 +74,7 @@ public class ConfigWindowController {
             DowmloadAppointmentAdress.setText(config.get("DowmloadAppointmentAdress"));
             DownloadReleaseAdress.setText(config.get("DownloadReleaseAdress"));
             downloadBenefitAdress.setText(config.get("downloadBenefitAdress"));
+            DownloadEGISSO.setText(config.get("downloadEGISSO"));
         }
     }
 }

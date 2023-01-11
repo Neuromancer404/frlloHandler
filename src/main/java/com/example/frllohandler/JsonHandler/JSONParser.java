@@ -12,6 +12,9 @@ public class JSONParser {
             readConfig(path);
             rdrRes.setParserStatus(true);
             rdrRes.setFirstStageURL(config.get("DowmloadAppointmentAdress"));
+            rdrRes.setSecondStageURL(config.get("downloadBenefitAdress"));
+            rdrRes.setThirhStageURL(config.get("DownloadReleaseAdress"));
+            rdrRes.setEgissoUrl(config.get("downloadEGISSO"));
             return rdrRes;
         }
         else{
