@@ -8,21 +8,49 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class Downloader{
     private String startPeriodDate;
     private String endPeriodDate;
 
-    public void startDownload(LocalDate startDate, LocalDate endDate, String url, String fileName) throws IOException {
-        System.out.println(url);
-        startPeriodDate = dateToString(startDate);
-        endPeriodDate = dateToString(endDate);
+    public String startDownload(LocalDate startDate, LocalDate endDate, String url, String fileName) throws IOException, ExecutionException, InterruptedException {
+        System.out.println(url+"/"+fileName+".xml?begin_date="+startPeriodDate+"&end_date="+endPeriodDate);
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(()->{
+            startPeriodDate = dateToString(startDate);
+            endPeriodDate = dateToString(endDate);
 
-        URL web = new URL(url+"/"+fileName+".xml?begin_date="+startPeriodDate+"&end_date="+endPeriodDate);
+            URL web = null;
+            try {
+                web = new URL(url+"/"+fileName+".xml?begin_date="+startPeriodDate+"&end_date="+endPeriodDate);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
 
-        ReadableByteChannel rbc = Channels.newChannel(web.openStream());
-        FileOutputStream fos = new FileOutputStream(fileName+".xml");
-        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            ReadableByteChannel rbc = null;
+            try {
+                rbc = Channels.newChannel(web.openStream());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(fileName+".xml");
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                fos.close();
+                rbc.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return fileName+".xml";
+        });
+        String result = future.get();
+        return result;
     }
 
     private String dateToString(LocalDate Date) {
@@ -31,13 +59,44 @@ public class Downloader{
         return date;
     }
 
-    public void startDownload(String url, String fileName) throws IOException {
-        Thrd thrd = new Thrd(url+"/"+fileName+".xml?begin_date="+startPeriodDate+"&end_date="+endPeriodDate, fileName);
-        thrd.start();
+    public String startDownload(String url, String fileName) throws IOException, ExecutionException, InterruptedException {
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            URL web = null;
+            try {
+                web = new URL(url);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+
+            ReadableByteChannel rbc = null;
+            try {
+                rbc = Channels.newChannel(web.openStream());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(fileName+".xml");
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                fos.close();
+                rbc.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return fileName+".xml";
+        });
+        String result = future.get();
+        return result;
+        /*Thrd thrd = new Thrd(url, fileName);
+        thrd.start();*/
     }
 }
 
-class Thrd extends Thread{
+/*class Thrd extends Thread{
     private String url;
     private String fileName;
     Thrd(String url, String fileName){
@@ -47,30 +106,7 @@ class Thrd extends Thread{
 
     @Override
     public void run() {
-        URL web = null;
-        try {
-            web = new URL(url);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
 
-        ReadableByteChannel rbc = null;
-        try {
-            rbc = Channels.newChannel(web.openStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(fileName+".xml");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
     }
-}
+}*/
