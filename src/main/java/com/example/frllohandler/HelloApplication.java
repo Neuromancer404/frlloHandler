@@ -19,7 +19,6 @@ public class HelloApplication extends Application {
         stage.setTitle("Обработчик ФРЛЛО");
         stage.setScene(scene);
         stage.show();
-
         readConfig();
     }
 

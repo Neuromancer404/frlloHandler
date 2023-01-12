@@ -1,9 +1,6 @@
 package com.example.frllohandler;
 
-import com.example.frllohandler.JsonHandler.Downloader;
-import com.example.frllohandler.JsonHandler.JSONParser;
-import com.example.frllohandler.JsonHandler.ReaderResult;
-import com.example.frllohandler.JsonHandler.xmlReader;
+import com.example.frllohandler.JsonHandler.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -144,10 +141,6 @@ public class HelloController {
         downloadBtn.setDisable(sts);
     }
     @FXML
-    void killDownload(MouseEvent event) {
-        downloader = null;
-    }
-    @FXML
     void openSettingsBtnClick(MouseEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("configWindow.fxml"));
@@ -171,20 +164,20 @@ public class HelloController {
     }
 
     @FXML
+    private Label description1;
+    @FXML
+    private Label description2;
+    @FXML
+    private Label description3;
+    @FXML
+    private Label description4;
+    @FXML
+    private Label description5;
+    @FXML
+    private Label description6;
+    @FXML
     void startParsing(MouseEvent event) {
-        String file = fileTextbox.getText();
-        xmlReader xmlRdr = new xmlReader();
-        try {
-            if(xmlRdr.Create(file, "fact")>0){
-                List<Map<String, String>> data = xmlRdr.Read("fact");
-                for(Map<String, String> item : data){
-                    for(String key : item.keySet()){
-                        System.out.println(key+" : "+item.get(key));
-                    }
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        egissoParser parser = new egissoParser(fileTextbox.getText());
+        description1.setText("Количество записей "+parser.getNodeCount());
     }
 }
