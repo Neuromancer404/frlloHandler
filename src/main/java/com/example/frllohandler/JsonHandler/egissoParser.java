@@ -1,5 +1,6 @@
 package com.example.frllohandler.JsonHandler;
 
+import com.example.frllohandler.JsonHandler.persons.egissoModifiedPerson;
 import com.example.frllohandler.JsonHandler.persons.egissoPerson;
 
 import java.io.IOException;
@@ -24,16 +25,19 @@ public class egissoParser {
                     }
                     personList.add(person);
                 }
-                show(personList);
+                modify(personList);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void show(List<egissoPerson> personList) {
+    public List<egissoModifiedPerson> modPersonList = new ArrayList<>();
+    private void modify(List<egissoPerson> personList) {
         for(egissoPerson person : personList){
-            System.out.println(person.getFirstName());
+            egissoModifiedPerson prsn = new egissoModifiedPerson();
+            prsn.setData(person);
+            modPersonList.add(prsn);
         }
     }
 }

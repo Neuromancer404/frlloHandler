@@ -10,16 +10,16 @@ public class egissoPerson {
     protected String Patronymic;
     protected String Gender;
     protected String BirthDate;
-    private String LMSZID;
-    private String categoryID;
+    protected String LMSZID;
+    protected String categoryID;
     protected String decision_date;
     protected String dateStart;
     protected String dateFinish;
-    private String usingSign;
-    private String amount;
-    private String OKEICode;
+    protected String usingSign;
+    protected String amount;
+    protected String OKEICode;
     protected String monetization;
-    private String lastChanging;
+    protected String lastChanging;
 
     public void setData(String key, String value){
         switch (key){
@@ -77,72 +77,4 @@ public class egissoPerson {
         }
     }
 
-
-    public String getOSZCode() {
-        return OSZCode;
-    }
-
-    public String getSNILS() {
-        return SNILS;
-    }
-
-    public String getFamilyName() {
-        return FamilyName;
-    }
-
-    public String getFirstName() {
-        return FirstName;
-    }
-
-    public String getPatronymic() {
-        return Patronymic;
-    }
-
-    public String getGender() {
-        return Gender;
-    }
-
-    public String getBirthDate() {
-        return BirthDate;
-    }
-
-    public String getLMSZID() {
-        return LMSZID;
-    }
-
-    public String getCategoryID() {
-        return categoryID;
-    }
-
-    public String getDecision_date() {
-        return decision_date;
-    }
-
-    public String getDateStart() {
-        return dateStart;
-    }
-
-    public String getDateFinish() {
-        return dateFinish;
-    }
-
-    public String getUsingSign() {
-        return usingSign;
-    }
-
-    public String getAmount() {
-        return amount;
-    }
-
-    public String getOKEICode() {
-        return OKEICode;
-    }
-
-    public String getMonetization() {
-        return monetization;
-    }
-
-    public String getLastChanging() {
-        return lastChanging;
-    }
 }

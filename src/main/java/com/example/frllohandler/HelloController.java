@@ -1,6 +1,7 @@
 package com.example.frllohandler;
 
 import com.example.frllohandler.JsonHandler.*;
+import com.example.frllohandler.JsonHandler.persons.egissoModifiedPerson;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -114,7 +115,7 @@ public class HelloController {
                         }
                         break;
                     case 0:
-                        file = downloader.startDownload(result.getEgissoUrl(), fileName);
+                        file = downloader.startDownload(result.getEgissoUrl(), fileName+"_"+LocalDate.now());
                         if(file.contains(".xml")){
                             alert.setText("Загрузка завершена");
                         }
@@ -124,7 +125,6 @@ public class HelloController {
                 blockButtons(false);
             } catch (IOException e) {
                 alert.setText(e.toString());
-                System.out.println(e);
             } catch (ExecutionException e) {
                 alert.setText(e.toString());
                 throw new RuntimeException(e);
@@ -176,8 +176,36 @@ public class HelloController {
     @FXML
     private Label description6;
     @FXML
+    private Button deleteLastMonth;
+    private List<egissoModifiedPerson> personList;
+    private List<egissoModifiedPerson> lastMonthPersonList;
+    @FXML
     void startParsing(MouseEvent event) {
         egissoParser parser = new egissoParser(fileTextbox.getText());
         description1.setText("Количество записей "+parser.getNodeCount());
+        personList = parser.modPersonList;
+    }
+
+    @FXML
+    private TextField lastMonthFile;
+    @FXML
+    void deleteLastMonth(MouseEvent event) {
+        alert.setText("");
+        if(lastMonthFile.getText().length()>0){
+            egissoParser parser = new egissoParser(lastMonthFile.getText());
+            description2.setText("Количество записей прошлого месяца: "+ parser.getNodeCount());
+            lastMonthPersonList = parser.modPersonList;
+
+            personsHandler();
+        }
+        else{
+            alert.setText("Укажите файл прошлого месяца");
+        }
+    }
+
+    private void personsHandler() {
+        ListComparison listComparison = new ListComparison(personList, lastMonthPersonList);
+        description3.setText("Количество совпавших записей: "+listComparison.matchesNum);
+        description4.setText("Количество новых записей: "+listComparison.newPersonsCount);
     }
 }
