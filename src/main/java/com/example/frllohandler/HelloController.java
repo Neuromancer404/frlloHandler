@@ -1,5 +1,6 @@
 package com.example.frllohandler;
 
+import com.example.frllohandler.FrlloTools.*;
 import com.example.frllohandler.JsonHandler.*;
 import com.example.frllohandler.JsonHandler.persons.egissoModifiedPerson;
 import javafx.fxml.FXML;
@@ -10,14 +11,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static com.example.frllohandler.FrlloTools.FrlloCase1Handler.frlloCase1HandlerResult;
 
 public class HelloController {
     @FXML
@@ -32,6 +35,8 @@ public class HelloController {
     private Button downloadBtn2;
     @FXML
     private Button downloadBtn3;
+    @FXML
+    private Button writeToDataBaseBtn;
     @FXML
     private DatePicker startPeriod;
     @FXML
@@ -49,6 +54,7 @@ public class HelloController {
 
     @FXML
     private TextField fileTextbox;
+
     @FXML
     void startDownload(MouseEvent event) {
         alert.setText("");
@@ -58,13 +64,13 @@ public class HelloController {
             download("EGISSO", 0);
         }else if(frlloCase1Tab.isSelected()){
             alert.setText("Идет загрузка...");
-            download("FRLLO1", 1);
+            download("FRLLO", 1);
         }else if(frlloCase2Tab.isSelected()){
             alert.setText("Идет загрузка...");
-            download("FRLLO2", 2);
+            download("FRLLO1", 2);
         }else if(frlloCase3Tab.isSelected()){
             alert.setText("Идет загрузка...");
-            download("FRLLO3", 3);
+            download("FRLLO2", 3);
         }
     }
     private Downloader downloader = new Downloader();;
@@ -73,72 +79,43 @@ public class HelloController {
         LocalDate endDate = endPeriod.getValue();
         alert.setText("");
         if(num != 0){
-            fileName = fileName+"_"+startDate+"-"+endDate;
-        }
-
-        else{
-            JSONParser jsnPrsr = new JSONParser();
-            ReaderResult result =  jsnPrsr.parse("config.json");
-
-            try {
-                String file=null;
-                switch (num){
-                    case 1:
-                        if(startDate == null && endDate == null){
-                            alert.setText("Введите дату начала и окончания");
-                        }
-                        else{
-                            file = downloader.startDownload(startDate, endDate, result.getfirstStageURL(), fileName);
-                            if(file.contains(".xml")){
-                                alert.setText("Загрузка завершена");
-                            }
-                            blockButtons(true);
-                        }
-
-                        break;
-                    case 2:
-                        if(startDate == null && endDate == null){
-                            alert.setText("Введите дату начала и окончания");
-                        }
-                        else {
-                            file = downloader.startDownload(startDate, endDate, result.getSecondStageURL(), fileName);
-                            if (file.contains(".xml")) {
-                                alert.setText("Загрузка завершена");
-                            }
-                            blockButtons(true);
-                        }
-                        break;
-                    case 3:
-                        file = downloader.startDownload(startDate, endDate, result.getThirhStageURL(), fileName);
-                        if(file.contains(".xml")){
-                            alert.setText("Загрузка завершена");
-                        }
-                        break;
-                    case 0:
-                        file = downloader.startDownload(result.getEgissoUrl(), fileName+"_"+LocalDate.now());
-                        if(file.contains(".xml")){
-                            alert.setText("Загрузка завершена");
-                        }
-                        fileTextbox.setText(file);
-                        break;
-                }
-                blockButtons(false);
-            } catch (IOException e) {
-                alert.setText(e.toString());
-            } catch (ExecutionException e) {
-                alert.setText(e.toString());
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                alert.setText(e.toString());
-                throw new RuntimeException(e);
+            if(startDate == null || endDate == null){
+                alert.setText("Введите дату");
+                return;
             }
         }
-    }
-    private void blockButtons(boolean sts){
-        downloadBtn1.setDisable(sts);
-        downloadBtn2.setDisable(sts);
-        downloadBtn3.setDisable(sts);
-        downloadBtn.setDisable(sts);
+        JSONParser jsnPrsr = new JSONParser();
+        ReaderResult result =  jsnPrsr.parse("config.json");
+        try {
+            alert.setText("Идет загрузка");
+            String finalFileName = fileName;
+            CompletableFuture<FrlloCase1HandlerResult> future = CompletableFuture.supplyAsync(() -> {
+                FrlloCase1Handler handler = null;
+                handler = new FrlloCase1Handler(
+                        startPeriod,
+                        endPeriod,
+                        result.getfirstStageURL(),
+                        finalFileName);
+                return frlloCase1HandlerResult;
+            });
+            FrlloCase1HandlerResult futRes = future.get();
+            if(futRes.error == null){
+                alert.setText("Загрузка завершена");
+                ReadFileBtn.setDisable(false);
+                //description11.setText("Файл: "+futRes.downloadedFile);
+                inputFileName.setText(futRes.downloadedFile);
+
+            }else {
+                alert.setText("Downloader: "+futRes.error);
+            }
+
+        } catch (ExecutionException e) {
+            alert.setText(e.toString());
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            alert.setText(e.toString());
+            throw new RuntimeException(e);
+        }
     }
     @FXML
     void openSettingsBtnClick(MouseEvent event) {
@@ -155,14 +132,64 @@ public class HelloController {
         }
     }
 
-    public HelloController() {
+    @FXML
+    private TextField inputFileName;
+    private FrlloCase1ParserResult frlloCase1ParserResult;
+    @FXML
+    void ReadDownloadFile(MouseEvent event) {
+        alert.setText("");
+        frlloCase1ParserResult = new FrlloCase1ParserResult();
+        CompletableFuture<FrlloCase1ParserResult> future = CompletableFuture.supplyAsync(() -> {
+            FrlloCase1Parser frlloCase1Parser = new FrlloCase1Parser(inputFileName.getText());
+            return frlloCase1Parser.getFrlloCase1ParserResult();
+        });
+        try {
+            FrlloCase1ParserResult res = future.get();
+            if(res.error == null){
+                description21.setText("Количество записей: "+res.getNodeCount());
+                alert.setText("Записи прочитаны.");
+            }else{
+                alert.setText(res.error);
+            }
+        } catch (InterruptedException e) {
+            alert.setText(e.getMessage());
+        } catch (ExecutionException e) {
+            alert.setText(e.getMessage());
+        }
+        //writeToDataBaseBtn.setDisable(false);
+        dadataCheckBtn.setDisable(false);
     }
 
     @FXML
-    void initialize() {
+    void dadataCheckBtnClick(MouseEvent event) {
+        DadataAdressParserResult result;
+        CompletableFuture<DadataAdressParserResult> future = CompletableFuture.supplyAsync(() -> {
+            DadataAdressParser dadataAdressParser = new DadataAdressParser(frlloCase1HandlerResult);
+            return dadataAdressParser.result;
+        });
+        try {
+            result = future.get();
+            if(result.error == null){
 
+            }else{
+                alert.setText(result.error);
+            }
+        } catch (InterruptedException e) {
+            alert.setText(e.getMessage());
+        } catch (ExecutionException e) {
+            alert.setText(e.getMessage());
+        }
     }
-
+    @FXML
+    void initialize() {
+        ReadFileBtn.setDisable(true);
+        writeToDataBaseBtn.setDisable(true);
+        dadataCheckBtn.setDisable(true);
+    }
+    @FXML
+    private Button ReadFileBtn;
+    @FXML
+    private Button dadataCheckBtn;
     @FXML
     private Label description1;
     @FXML
@@ -176,36 +203,72 @@ public class HelloController {
     @FXML
     private Label description6;
     @FXML
+    private Label description11;
+    @FXML
+    private Label description21;
+    @FXML
+    private Label description31;
+    @FXML
+    private Label description41;
+    @FXML
+    private Label description51;
+    @FXML
+    private Label description61;
+    @FXML
     private Button deleteLastMonth;
-    private List<egissoModifiedPerson> personList;
+    private List<egissoModifiedPerson> EgissoPersonList;
     private List<egissoModifiedPerson> lastMonthPersonList;
     @FXML
-    void startParsing(MouseEvent event) {
-        egissoParser parser = new egissoParser(fileTextbox.getText());
-        description1.setText("Количество записей "+parser.getNodeCount());
-        personList = parser.modPersonList;
+    void startParsing(MouseEvent event) throws FileNotFoundException {
+        /*try {
+            egissoParser parser = new egissoParser(fileTextbox.getText());
+            description1.setText("Количество записей "+parser.getNodeCount());
+            this.personList = parser.modPersonList;
+        }catch (FileNotFoundException ex){
+            alert.setText(ex.toString());
+        }*/
     }
-
     @FXML
     private TextField lastMonthFile;
     @FXML
-    void deleteLastMonth(MouseEvent event) {
-        alert.setText("");
+    void deleteLastMonth(MouseEvent event) throws IOException {
+        /*alert.setText("");
+        if(description1.getText().length() == 0){
+            startParsing(event);
+        }
         if(lastMonthFile.getText().length()>0){
-            egissoParser parser = new egissoParser(lastMonthFile.getText());
-            description2.setText("Количество записей прошлого месяца: "+ parser.getNodeCount());
-            lastMonthPersonList = parser.modPersonList;
-
-            personsHandler();
+            try{
+                egissoParser parser = new egissoParser(lastMonthFile.getText());
+                description2.setText("Количество записей прошлого месяца: "+ parser.getNodeCount());
+                lastMonthPersonList = parser.modPersonList;
+                if(lastMonthFile.getText().contains(".xml")){
+                    personsHandler();
+                }
+                else if(lastMonthFile.getText().contains(".csv")){
+                    personsHandler(parser.modedPersonList);
+                }
+                else{
+                    lastMonthFile.setText("");
+                }
+            }
+            catch (IOException ex){
+                alert.setText(ex.toString());
+            }
         }
         else{
             alert.setText("Укажите файл прошлого месяца");
-        }
+        }*/
     }
 
-    private void personsHandler() {
+   /* private void personsHandler(List<egissoModifiedPerson> modedPersonList) {
+        ListComparison listComparison = new ListComparison(personList, modedPersonList);
+        description3.setText("Количество совпавших записей: "+listComparison.matchesNum);
+        description4.setText("Количество новых записей: "+listComparison.newPersonsCount);
+    }*/
+
+    /*private void personsHandler() {
         ListComparison listComparison = new ListComparison(personList, lastMonthPersonList);
         description3.setText("Количество совпавших записей: "+listComparison.matchesNum);
         description4.setText("Количество новых записей: "+listComparison.newPersonsCount);
-    }
+    }*/
 }

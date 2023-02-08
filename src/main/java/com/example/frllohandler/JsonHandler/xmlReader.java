@@ -12,27 +12,36 @@ public class xmlReader {
     private String _rootTag;
     private String _stratcherInfo;
     private String[] nodeNline = new String[2];
-    public int Create(String Path, String rootTag) throws IOException {
-        _Path = Path;
-        _rootTag = rootTag;
-        int i = 0, j = 0;
-        File file = new File(Path);
-        FileReader fr = new FileReader(file);
-        BufferedReader reader = new BufferedReader(fr);
-        String line = reader.readLine();
-        while (line != null) {
-            if(line.contains("<"+_rootTag+">")){
-                i++;
+    public int Create(String Path, String rootTag) throws FileNotFoundException {
+        try{
+            _Path = Path;
+            _rootTag = rootTag;
+            int i = 0, j = 0;
+            File file = new File(Path);
+            FileReader fr = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fr);
+            String line = reader.readLine();
+            while (line != null) {
+                if(line.contains("<"+_rootTag+">")){
+                    i++;
+                }
+                if(line.contains("</"+_rootTag+">")){
+                    j++;
+                }
+                line = reader.readLine();
             }
-            if(line.contains("</"+_rootTag+">")){
-                j++;
+            if(i==j){
+                RootTagCount = i;
             }
-            line = reader.readLine();
+            return RootTagCount;
         }
-        if(i==j){
-            RootTagCount = i;
+        catch (FileNotFoundException ex){
+            System.out.println(ex);
+            throw ex;
+        } catch (IOException e) {
+            System.out.println(e);
+            return 0;
         }
-        return RootTagCount;
     }
     public List<Map<String, String>> Read(String tag) throws IOException {
         List<Map<String, String>> lines = new ArrayList<>();

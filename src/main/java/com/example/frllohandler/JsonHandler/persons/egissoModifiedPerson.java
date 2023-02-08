@@ -42,7 +42,120 @@ public class egissoModifiedPerson extends egissoPerson{
 
     public void setData(String key, String value){
         switch (key){
-
+            case "RecType":
+                RecType = value;
+                break;
+            case "LMSZID":
+                LMSZID= value;
+                break;
+            case "categoryID":
+                categoryID = value;
+                break;
+            case "ONMSZCode":
+                ONMSZCode= value;
+                break;
+            case "SNILS_recip":
+                SNILS_recip= value;
+                break;
+            case "FamilyName_recip":
+                FamilyName_recip= value;
+                break;
+            case "Name_recip":
+                Name_recip= value;
+                break;
+            case "Patronymic_recip":
+                Patronymic_recip= value;
+                break;
+            case "Gender_recip":
+                Gender_recip= value;
+                break;
+            case "BirthDate_recip":
+                BirthDate_recip= value;
+                break;
+            case "doctype_recip":
+                doctype_recip= value;
+                break;
+            case "doc_Series_recip":
+                doc_Series_recip= value;
+                break;
+            case "doc_Number_recip":
+                doc_Number_recip= value;
+                break;
+            case "doc_IssueDate_recip":
+                doc_IssueDate_recip= value;
+                break;
+            case "doc_Issuer_recip":
+                doc_Issuer_recip= value;
+                break;
+            case "SNILS_reason":
+                SNILS_reason= value;
+                break;
+            case "FamilyName_reason":
+                FamilyName_reason= value;
+                break;
+            case "Name_reason":
+                Name_reason= value;
+                break;
+            case "Patronymic_reason":
+                Patronymic_reason= value;
+                break;
+            case "Gender_reason":
+                Gender_reason= value;
+                break;
+            case "BirthDate_reason":
+                BirthDate_reason= value;
+                break;
+            case "doctype_reason":
+                doctype_reason= value;
+                break;
+            case "doc_Series_reason":
+                doc_Series_reason= value;
+                break;
+            case "doc_Number_reason":
+                doc_Number_reason= value;
+                break;
+            case "doc_IssueDate_reason":
+                doc_IssueDate_reason= value;
+                break;
+            case "doc_Issuer_reason":
+                doc_Issuer_reason= value;
+                break;
+            case "decision_date":
+                decision_date= value;
+                break;
+            case "dateStart":
+                dateStart= value;
+                break;
+            case "dateFinish":
+                dateFinish = value;
+                break;
+            case "usingSign":
+                usingSign= value;
+                break;
+            case "criteria":
+                criteria= value;
+                break;
+            case "FormCode":
+                FormCode= value;
+                break;
+            case "amount":
+                amount= value;
+                break;
+            case "measuryCode":
+                measuryCode= value;
+                break;
+            case "monetization":
+                monetization= value;
+                break;
+            case "content":
+                content= value;
+                break;
+            case "comment":
+                comment= value;
+                break;
+            case "equivalentAmount":
+                equivalentAmount= value;
+                break;
         }
     }
 
