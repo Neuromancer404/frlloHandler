@@ -21,7 +21,6 @@ public class FrlloCase1Handler {
             gfy(e.getMessage());
         }
     }
-
     public static FrlloCase1HandlerResult frlloCase1HandlerResult;
     private void gfy(String error) {
         frlloCase1HandlerResult = new FrlloCase1HandlerResult();

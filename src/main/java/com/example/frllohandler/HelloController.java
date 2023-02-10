@@ -144,17 +144,17 @@ public class HelloController {
             return frlloCase1Parser.getFrlloCase1ParserResult();
         });
         try {
-            FrlloCase1ParserResult res = future.get();
-            if(res.error == null){
-                description21.setText("Количество записей: "+res.getNodeCount());
-                alert.setText("Записи прочитаны.");
+            frlloCase1ParserResult = future.get();
+            if(frlloCase1ParserResult.error == null){
+                description21.setText("Количество записей: "+frlloCase1ParserResult.getNodeCount());
+                alert.setText("Записи прочитаны");
             }else{
-                alert.setText(res.error);
+                alert.setText(frlloCase1ParserResult.error);
             }
         } catch (InterruptedException e) {
-            alert.setText(e.getMessage());
+            alert.setText("ReadDownloadFile: "+e.getMessage());
         } catch (ExecutionException e) {
-            alert.setText(e.getMessage());
+            alert.setText("ReadDownloadFile: "+e.getMessage());
         }
         //writeToDataBaseBtn.setDisable(false);
         dadataCheckBtn.setDisable(false);
@@ -164,7 +164,7 @@ public class HelloController {
     void dadataCheckBtnClick(MouseEvent event) {
         DadataAdressParserResult result;
         CompletableFuture<DadataAdressParserResult> future = CompletableFuture.supplyAsync(() -> {
-            DadataAdressParser dadataAdressParser = new DadataAdressParser(frlloCase1HandlerResult);
+            DadataAdressParser dadataAdressParser = new DadataAdressParser(frlloCase1ParserResult);
             return dadataAdressParser.result;
         });
         try {
@@ -174,10 +174,10 @@ public class HelloController {
             }else{
                 alert.setText(result.error);
             }
-        } catch (InterruptedException e) {
-            alert.setText(e.getMessage());
-        } catch (ExecutionException e) {
-            alert.setText(e.getMessage());
+        }catch (InterruptedException e) {
+            alert.setText("dadataCheckBtnClick: "+e.getMessage());
+        }catch (ExecutionException e) {
+            alert.setText("dadataCheckBtnClick: "+e.getMessage());
         }
     }
     @FXML

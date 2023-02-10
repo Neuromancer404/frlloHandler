@@ -57,10 +57,6 @@ public class Case1Person {
         return region;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
     public String getAddress_type_code() {
         return address_type_code;
     }
@@ -127,7 +123,6 @@ public class Case1Person {
     private String snils;
     private String policy_sn;
     private String region;
-    private String address;
     private String address_type_code;
     private String fias_address;
     private String fias_home;
@@ -185,9 +180,6 @@ public class Case1Person {
                 break;
             case "region":
                 region= value;
-                break;
-            case "address":
-                address= value;
                 break;
             case "address_type_code":
                 address_type_code= value;
