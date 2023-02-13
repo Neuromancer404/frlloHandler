@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 public class DadataAdressParser {
 
@@ -21,6 +22,8 @@ public class DadataAdressParser {
             String answer = sendPost(person.getFias_address());
             if(answer.length()>1){
                 JsonReader readedData = new JsonReader(answer);
+                Map<String, String> keyVal = readedData.getKeyVal();
+                System.out.println(keyVal.get("source"));
             }
             break;
         }
