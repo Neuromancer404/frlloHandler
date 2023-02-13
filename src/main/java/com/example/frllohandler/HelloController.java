@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -162,9 +163,16 @@ public class HelloController {
 
     @FXML
     void dadataCheckBtnClick(MouseEvent event) {
+        Map<String, String> config = readConfig();
+
         DadataAdressParserResult result;
         CompletableFuture<DadataAdressParserResult> future = CompletableFuture.supplyAsync(() -> {
-            DadataAdressParser dadataAdressParser = new DadataAdressParser(frlloCase1ParserResult);
+            DadataAdressParser dadataAdressParser = new DadataAdressParser(
+                    frlloCase1ParserResult,
+                    config.get("dadataSecretKey"),
+                    config.get("dadataAPIkey"),
+                    config.get("dadataAdress")
+            );
             return dadataAdressParser.result;
         });
         try {
@@ -180,6 +188,17 @@ public class HelloController {
             alert.setText("dadataCheckBtnClick: "+e.getMessage());
         }
     }
+
+    private Map<String, String> readConfig() {
+        JSONParser jsnPrsr = new JSONParser();
+        ReaderResult result =  jsnPrsr.parse("config.json");
+        if(result.getParserStatus() == true){
+            Map<String, String> config = jsnPrsr.getConfig();
+            return config;
+        }
+        return null;
+    }
+
     @FXML
     void initialize() {
         ReadFileBtn.setDisable(true);

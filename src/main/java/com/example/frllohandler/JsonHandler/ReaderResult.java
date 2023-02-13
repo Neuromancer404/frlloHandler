@@ -1,6 +1,15 @@
 package com.example.frllohandler.JsonHandler;
 
 public class ReaderResult {
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    private String error;
     private boolean ParserStatus;
 
     public boolean getParserStatus() {

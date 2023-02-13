@@ -1,36 +1,64 @@
 package com.example.frllohandler.FrlloTools;
 
 import com.example.frllohandler.FrlloTools.FrlloPerson.Case1Person;
+import com.example.frllohandler.Tools.JsonReader;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class DadataAdressParser {
 
     public static DadataAdressParserResult result;
-    private String _URL = "https://cleaner.dadata.ru/api/v1/clean/address";
-    private String _APIkey = "58f4203d83a2268cfcb532be7ca23f3580c1d570";
-    private String _SecretKey = "6b3389c4c8d615174b1690bdfd6cd07166a9c807";
-    public DadataAdressParser(FrlloCase1ParserResult frlloCase1HandlerResult) {
+    private String _URL;
+    private String _APIkey;
+    private String _SecretKey;
+    public DadataAdressParser(FrlloCase1ParserResult frlloCase1HandlerResult, String secretKey, String APIkey, String URL) {
+        _URL = URL;
+        _APIkey = APIkey;
+        _SecretKey = secretKey;
+
         result = new DadataAdressParserResult();
         List<Case1Person> personList = frlloCase1HandlerResult.getPersonList();
         for(Case1Person person : personList){
             String answer = sendPost(person.getFias_address());
             if(answer.length()>1){
-                JsonReader readedData = new JsonReader(answer);
-                Map<String, String> keyVal = readedData.getKeyVal();
-                System.out.println(keyVal.get("source"));
+                CompletableFuture<Map<String, String>> future = CompletableFuture.supplyAsync(() -> {
+                    Map<String, String> keyVal = new HashMap<>();
+                    try {
+                        JsonReader readedData = new JsonReader(answer);
+                        keyVal = readedData.getKeyVal();
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        result.error = e.getMessage();
+                    }
+                    return keyVal;
+                });
+
+                try {
+                    Map<String, String> result = future.get();
+                    if(result.get("fias_id")==null){
+                        System.out.println("AAA");
+                    }else{
+                        person.setFias_address(result.get("fias_id"));
+                    }
+                } catch (InterruptedException e) {
+                    result.error = e.getMessage();
+                } catch (ExecutionException e) {
+                    result.error = e.getMessage();
+                }
             }
-            break;
         }
     }
 
     private String sendPost(String fiasAddress) {
-        int postDataLength = fiasAddress.length();
         String response="";
         try {
             URL url = new URL(_URL);

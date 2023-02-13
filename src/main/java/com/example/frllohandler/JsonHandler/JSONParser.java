@@ -1,25 +1,27 @@
 package com.example.frllohandler.JsonHandler;
 
+import com.example.frllohandler.Tools.JsonWriter;
+import com.example.frllohandler.Tools.JsonReader;
+
 import java.io.*;
-import java.util.HashMap;
 import java.util.Map;
 
 public class JSONParser {
+    private ReaderResult readerResult = new ReaderResult();
     public ReaderResult parse(String path) {
         String fileContaisn = readerFle(path);
-        ReaderResult rdrRes = new ReaderResult();
         if(!fileContaisn.equals("")){
-            readConfig(path);
-            rdrRes.setParserStatus(true);
-            rdrRes.setFirstStageURL(config.get("DowmloadAppointmentAdress"));
-            rdrRes.setSecondStageURL(config.get("downloadBenefitAdress"));
-            rdrRes.setThirhStageURL(config.get("DownloadReleaseAdress"));
-            rdrRes.setEgissoUrl(config.get("downloadEGISSO"));
-            return rdrRes;
+            readConfig(fileContaisn);
+            readerResult.setParserStatus(true);
+            readerResult.setFirstStageURL(config.get("DowmloadAppointmentAdress"));
+            readerResult.setSecondStageURL(config.get("downloadBenefitAdress"));
+            readerResult.setThirhStageURL(config.get("DownloadReleaseAdress"));
+            readerResult.setEgissoUrl(config.get("downloadEGISSO"));
+            return readerResult;
         }
         else{
-            rdrRes.setParserStatus(false);
-            return rdrRes;
+            readerResult.setParserStatus(false);
+            return readerResult;
         }
     }
     private Map<String, String> config;
@@ -27,26 +29,9 @@ public class JSONParser {
     public Map<String, String> getConfig(){
         return config;
     }
-    private void readConfig(String path) {
-        try {
-            File file = new File(path);
-            FileReader fr = new FileReader(file);
-            BufferedReader reader = new BufferedReader(fr);
-            String line = reader.readLine();
-
-            config = new HashMap<>();
-            while (line != null) {
-                if(line.contains("\":\"")){
-                    String[] keyValue = readKeyValFromLine(line);
-                    config.put(keyValue[0], keyValue[1]);
-                }
-                line = reader.readLine();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void readConfig(String data) {
+        JsonReader reader = new JsonReader(data);
+        config = reader.getKeyVal();
     }
 
     private String[] readKeyValFromLine(String line) {
@@ -71,45 +56,16 @@ public class JSONParser {
         {
             int c;
             while((c=reader.read())!=-1){
-                container += (char)c;
-            }
-        }
-        catch(FileNotFoundException ex){
-            File f = new File(path);
-            try {
-                if (f.createNewFile())
-                    System.out.println("File created");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                container+=(char)c;
             }
         }
         catch(IOException ex){
-            System.out.println(ex.getMessage());
+            readerResult.setError(ex.getMessage());
         }
         return container;
     }
 
-    public void writeConfig(Map<String, String> config) {
-        try(FileWriter writer = new FileWriter("config.json", false))
-        {
-            writer.write("{\n");
-            int cnt = 1;
-            for (Map.Entry<String, String> entry : config.entrySet()) {
-                cnt++;
-                writer.write("\t\""+entry.getKey()+"\"" + ":" + "\""+entry.getValue()+"\"");
-                if(config.size() >= cnt){
-                    writer.write(",\n");
-                }
-                else{
-                    writer.write("\n");
-                }
-            }
-            writer.write("}");
-
-            writer.flush();
-        }
-        catch(IOException ex){
-            System.out.println(ex.getMessage());
-        }
+    public void writeConfig(Map<String, String> config, String fileName) {
+        JsonWriter writer = new JsonWriter(config, fileName);
     }
 }

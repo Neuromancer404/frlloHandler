@@ -7,12 +7,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class ConfigWindowController {
+    @FXML
+    private TextField dadataAPIkey;
+
+    @FXML
+    private TextField dadataAdress;
+
+    @FXML
+    private TextField dadataSecretKey;
     @FXML
     private TextField DownloadEGISSO;
 
@@ -34,7 +40,7 @@ public class ConfigWindowController {
             alertLabel.setText("");
             config = getConfig();
             JSONParser jsnParser = new JSONParser();
-            jsnParser.writeConfig(config);
+            jsnParser.writeConfig(config, "config.json");
         }
         else{
             alertLabel.setText("Заполните все поля");
@@ -58,6 +64,9 @@ public class ConfigWindowController {
         conf.put("DownloadReleaseAdress", DownloadReleaseAdress.getText());
         conf.put("downloadBenefitAdress", downloadBenefitAdress.getText());
         conf.put("downloadEGISSO", DownloadEGISSO.getText());
+        conf.put("dadataSecretKey", dadataSecretKey.getText());
+        conf.put("dadataAdress", dadataAdress.getText());
+        conf.put("dadataAPIkey", dadataAPIkey.getText());
         return conf;
     }
 
@@ -75,6 +84,9 @@ public class ConfigWindowController {
             DownloadReleaseAdress.setText(config.get("DownloadReleaseAdress"));
             downloadBenefitAdress.setText(config.get("downloadBenefitAdress"));
             DownloadEGISSO.setText(config.get("downloadEGISSO"));
+            dadataSecretKey.setText(config.get("dadataSecretKey"));
+            dadataAdress.setText(config.get("dadataAdress"));
+            dadataAPIkey.setText(config.get("dadataAPIkey"));
         }
     }
 }

@@ -125,6 +125,11 @@ public class Case1Person {
     private String region;
     private String address_type_code;
     private String fias_address;
+
+    public void setFias_address(String fias_address) {
+        this.fias_address = fias_address;
+    }
+
     private String fias_home;
     private String house_num;
     private String build_num;

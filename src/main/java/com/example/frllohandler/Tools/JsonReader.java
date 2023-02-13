@@ -1,4 +1,4 @@
-package com.example.frllohandler.FrlloTools;
+package com.example.frllohandler.Tools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +13,10 @@ public class JsonReader {
     }
 
     public JsonReader(String data) {
+        data = data.replace("\t", "");
+        data = data.replace("\n", "");
         data = removeBrackets(removeBrackets(data, '[', ']'), '{', '}');
+        data+=".";
         char[] arr = data.toCharArray();
         //Чтение ключей
         List<String> keyArr = new ArrayList<>();
@@ -32,6 +35,8 @@ public class JsonReader {
                 keyArr.add(key);
             }
         }
+        data = data.substring(0, data.length()-1);
+        arr = data.toCharArray();
         //Чтение значений
         for(int i =0;i<keyArr.size();i++){
             String val="";
@@ -48,7 +53,9 @@ public class JsonReader {
                 val = val.substring(0, val.length()-1);
             }
             val = removeBrackets(val, '"', '"');
-            System.out.println(keyArr.get(i)+":  "+val);
+            if(val == "null"){
+                val = null;
+            }
             keyVal.put(keyArr.get(i), val);
         }
     }
